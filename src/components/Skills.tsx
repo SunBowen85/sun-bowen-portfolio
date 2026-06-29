@@ -1,108 +1,141 @@
 "use client";
 
 import {
-  BarChart3,
-  Blocks,
+  ArrowRight,
   Bot,
+  Check,
   ClipboardCheck,
-  FileText,
   FolderKanban,
-  Wrench,
-  type LucideIcon,
 } from "lucide-react";
-import { motion } from "framer-motion";
-import { profileData } from "@/data/profile";
-import { Reveal } from "@/components/Reveal";
-import { SectionHeader } from "@/components/SectionHeader";
-import type { BentoSpan, IconKey } from "@/types/profile";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import { WordsPullUpMultiStyle } from "@/components/PrismaText";
 
-const skillIcons: Record<IconKey, LucideIcon> = {
-  coordination: ClipboardCheck,
-  product: Blocks,
-  technical: FolderKanban,
-  tools: Wrench,
-  docs: FileText,
-  visualization: BarChart3,
-  vibe: Bot,
-};
+const featureVideo =
+  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260406_133058_0504132a-0cf3-4450-a370-8ea3b05c95d4.mp4";
 
-const bentoClasses: Record<BentoSpan, string> = {
-  large: "md:col-span-2 md:row-span-2 min-h-[22rem]",
-  wide: "md:col-span-2 min-h-[15rem]",
-  tall: "md:row-span-2 min-h-[22rem]",
-  compact: "min-h-[15rem]",
-};
+const featureCards = [
+  {
+    number: "01",
+    title: "Project Coordination.",
+    icon: ClipboardCheck,
+    checks: ["会议纪要与任务跟进", "跨部门沟通同步", "项目文档与汇报材料"],
+  },
+  {
+    number: "02",
+    title: "Product Understanding.",
+    icon: FolderKanban,
+    checks: ["需求理解与功能拆解", "用户体验意识", "Jira / Project 协作流"],
+  },
+  {
+    number: "03",
+    title: "Vibe Coding.",
+    icon: Bot,
+    checks: ["AI 辅助需求拆解", "Next.js / TypeScript 原型", "GitHub 项目沉淀"],
+  },
+];
 
 export function Skills() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
   return (
     <section
       id="skills"
-      className="relative overflow-hidden px-4 py-28 sm:px-6 lg:px-8 lg:py-36"
+      className="relative min-h-screen overflow-hidden bg-black px-4 py-24 sm:px-6 md:py-32"
     >
-      <div className="absolute left-1/2 top-28 h-80 w-[42rem] -translate-x-1/2 rounded-full bg-cyan-400/[0.06] blur-3xl" />
-      <div className="relative mx-auto max-w-7xl">
-        <Reveal>
-          <SectionHeader
-            eyebrow="Capabilities"
-            title="A modular system for project rhythm, product clarity, and technical context."
-            description="能力不再作为平均分布的简历条目，而是像工作室能力矩阵一样呈现优先级、协作场景和交付价值。"
-            align="center"
-          />
-        </Reveal>
+      <div className="bg-noise pointer-events-none absolute inset-0 opacity-[0.15]" />
+      <div ref={ref} className="relative mx-auto max-w-7xl">
+        <WordsPullUpMultiStyle
+          className="mx-auto max-w-5xl text-center text-xl font-normal leading-tight sm:text-2xl md:text-3xl lg:text-4xl"
+          segments={[
+            {
+              text: "Studio-grade workflows for reliable delivery.",
+              className: "text-[#E1E0CC]",
+            },
+            {
+              text: "Built for project rhythm. Powered by technical context.",
+              className: "text-gray-500",
+            },
+          ]}
+        />
 
-        <div className="mt-16 grid auto-rows-[minmax(15rem,auto)] gap-4 md:grid-cols-4 lg:gap-5">
-          {profileData.skills.map((skill, index) => {
-            const Icon = skillIcons[skill.icon];
+        <div className="mt-16 grid gap-3 sm:gap-2 md:grid-cols-2 md:gap-2 lg:h-[480px] lg:grid-cols-4 lg:gap-1">
+          <motion.article
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : undefined}
+            transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
+            className="group relative min-h-[360px] overflow-hidden rounded-[1.75rem] bg-[#212121] lg:min-h-0"
+          >
+            <video
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              src={featureVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              aria-hidden="true"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+            <p className="absolute bottom-6 left-6 max-w-[12rem] text-2xl leading-tight text-[#E1E0CC]">
+              Your delivery canvas.
+            </p>
+          </motion.article>
+
+          {featureCards.map((card, index) => {
+            const Icon = card.icon;
 
             return (
-              <Reveal
-                key={skill.title}
-                delay={index * 0.04}
-                className={bentoClasses[skill.bentoSpan]}
+              <motion.article
+                key={card.title}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={isInView ? { opacity: 1, scale: 1 } : undefined}
+                transition={{
+                  duration: 0.72,
+                  delay: 0.15 * (index + 1),
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="flex min-h-[360px] flex-col justify-between rounded-[1.75rem] bg-[#212121] p-6 sm:p-7 lg:min-h-0"
               >
-                <motion.article
-                  whileHover={{
-                    y: -8,
-                    rotateX: 1.5,
-                    rotateY: -1.5,
-                    scale: 1.01,
-                  }}
-                  transition={{ type: "spring", stiffness: 240, damping: 24 }}
-                  className="studio-panel group relative flex h-full overflow-hidden rounded-[1.5rem] bg-slate-950/48 p-6 shadow-2xl shadow-black/20 backdrop-blur-xl"
-                >
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(125,211,252,0.12),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.035),transparent)] opacity-80 transition duration-500 group-hover:opacity-100" />
-                  <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full border border-cyan-200/10 transition duration-500 group-hover:scale-125 group-hover:border-cyan-100/20" />
-                  <div className="relative flex h-full w-full flex-col">
-                    <div className="mb-8 flex items-center justify-between">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-200/20 bg-cyan-100/[0.08] text-cyan-100">
-                        <Icon aria-hidden="true" size={22} />
-                      </div>
-                      <span className="font-mono text-xs text-slate-500">
-                        0{index + 1}
-                      </span>
+                <div>
+                  <div className="mb-10 flex items-center justify-between">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+                      <Icon aria-hidden="true" size={20} />
                     </div>
-
-                    <div className="mt-auto">
-                      <h3 className="text-2xl font-semibold text-white">
-                        {skill.title}
-                      </h3>
-                      <p className="mt-4 max-w-xl text-sm leading-7 text-slate-300">
-                        {skill.description}
-                      </p>
-                      <div className="mt-6 flex flex-wrap gap-2">
-                        {skill.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-slate-300"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+                    <span className="text-xs text-gray-500">{card.number}</span>
                   </div>
-                </motion.article>
-              </Reveal>
+
+                  <h3 className="max-w-[12rem] text-2xl leading-tight text-[#E1E0CC]">
+                    {card.title}
+                  </h3>
+
+                  <div className="mt-8 space-y-4">
+                    {card.checks.map((check) => (
+                      <div key={check} className="flex items-start gap-3">
+                        <Check
+                          aria-hidden="true"
+                          size={16}
+                          className="mt-0.5 shrink-0 text-primary"
+                        />
+                        <p className="text-sm leading-6 text-gray-400">{check}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <a
+                  href="#top"
+                  className="mt-8 inline-flex items-center gap-2 text-sm text-primary/80 transition hover:text-primary"
+                >
+                  Learn more
+                  <ArrowRight
+                    aria-hidden="true"
+                    size={16}
+                    className="-rotate-45"
+                  />
+                </a>
+              </motion.article>
             );
           })}
         </div>
